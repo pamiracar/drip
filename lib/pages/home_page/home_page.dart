@@ -115,7 +115,7 @@ class HomePage extends GetView<HomePageController> {
                           style: TextStyle(fontWeight: FontWeight.w300),
                           decoration: InputDecoration(
                             hint: Text(
-                              "Updated Daily Goal",
+                              "Update Daily Goal",
                               style: TextStyle(
                                 fontWeight: FontWeight.w300
                               ),
