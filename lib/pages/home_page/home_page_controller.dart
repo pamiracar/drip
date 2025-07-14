@@ -15,11 +15,17 @@ class HomePageController extends GetxController {
   void incrementWater() {
     if (waterDrank.value < waterGoal.value) {
       waterDrank.value++;
+      databaseService.updateDailyGoal(2, waterDrank.value);
+      debugPrint("update of drank successfully completed");
+      databaseService.printd();
     }
   }
 
   void resetWater() {
     waterDrank.value = 0;
+    databaseService.updateDailyGoal(2, waterDrank.value);
+    debugPrint("drank deleted");
+    databaseService.printd();
   }
 
   void updateGoal(int newGoal) {
@@ -31,6 +37,7 @@ class HomePageController extends GetxController {
     final List<Drip>? dripList = await databaseService.getDrip();
     if (dripList!.isEmpty) {
       await databaseService.addRow("daily_goal", 12);
+      await databaseService.addRow("drank_water", 0);
     }
   }
 
@@ -59,11 +66,25 @@ class HomePageController extends GetxController {
     }
   }
 
+  Future<void> _loadDrankWater() async {
+    final List<Drip>? dripList = await databaseService.getDrip();
+    if (dripList != null && dripList.isNotEmpty) {
+      final Drip secondDrip = dripList[1];
+
+      debugPrint(secondDrip.id.toString());
+      debugPrint(secondDrip.key);
+      debugPrint(secondDrip.content.toString());
+
+      waterDrank.value = secondDrip.content;
+    }
+  }
+
   @override
   void onInit(){
     super.onInit();
     addDailyGoal();
     _loadWaterGoal();
+    _loadDrankWater();
     databaseService.printd();
   }
 }
