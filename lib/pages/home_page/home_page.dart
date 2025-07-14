@@ -15,6 +15,7 @@ class HomePage extends GetView<HomePageController> {
           "Welcome to Drip",
           style: TextStyle(fontWeight: FontWeight.w300),
         ),
+        centerTitle: true,
       ),
       body: Center(
         child: Padding(
@@ -44,9 +45,9 @@ class HomePage extends GetView<HomePageController> {
                                     ),
                                     circularStrokeCap: CircularStrokeCap.round,
                                     center: Text(
-                                      "% ${(controller.waterPercentage * 100).toStringAsFixed(1)}",
+                                      "${controller.waterDrank}",
                                       style: TextStyle(
-                                        fontSize: 15,
+                                        fontSize: 18,
                                         fontWeight: FontWeight.w300,
                                       ),
                                     ),
@@ -75,31 +76,37 @@ class HomePage extends GetView<HomePageController> {
                                     ),
                                   ),
                                   SizedBox(height: 10),
-                                  ElevatedButton(
-                                    onPressed: controller.incrementWater,
-                                    child: Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                        horizontal: 27.0,
-                                      ),
-                                      child: const Text(
-                                        "Drink Water",
-                                        style: TextStyle(
-                                          fontWeight: FontWeight.w300,
+                                  SizedBox(
+                                    width: 130,
+                                    child: ElevatedButton(
+                                      onPressed: controller.incrementWater,
+                                      child: Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: 0.0,
+                                        ),
+                                        child: const Text(
+                                          "Drink Water",
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.w300,
+                                          ),
                                         ),
                                       ),
                                     ),
                                   ),
                                   SizedBox(height: 5),
-                                  ElevatedButton(
-                                    onPressed: controller.resetWater,
-                                    child: Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                        horizontal: 47.0,
-                                      ),
-                                      child: const Text(
-                                        "Reset",
-                                        style: TextStyle(
-                                          fontWeight: FontWeight.w300,
+                                  SizedBox(
+                                    width: 130,
+                                    child: ElevatedButton(
+                                      onPressed: controller.resetWater,
+                                      child: Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: 0.0,
+                                        ),
+                                        child: const Text(
+                                          "Reset",
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.w300,
+                                          ),
                                         ),
                                       ),
                                     ),
