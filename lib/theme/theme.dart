@@ -144,7 +144,7 @@ class AppTheme {
     ),),
     inputDecorationTheme: InputDecorationTheme(
       filled: true,
-      fillColor: AppColors.lightSurface,
+      fillColor: AppColors.lightBackground,
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(8),
         borderSide: const BorderSide(
