@@ -1,8 +1,6 @@
-import 'dart:ffi';
-
-import 'package:drip/models/task.dart';
+import 'package:drip/models/drip.dart';
+import 'package:drip/models/water.dart';
 import 'package:flutter/material.dart';
-import 'package:get/state_manager.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -10,10 +8,15 @@ class DatabaseService {
   static Database? _db;
   static final DatabaseService instance = DatabaseService._constructor();
 
-  final String _tasksTableName = "driq";
-  final String _tasksIdColumnName = "id";
-  final String _tasksKeyColumnName = "key";
-  final String _tasksContentColumnName = "content";
+  final String _dripsTableName = "driq";
+  final String _dripsIdColumnName = "id";
+  final String _dripsKeyColumnName = "key";
+  final String _dripsContentColumnName = "content";
+
+  final String _drankTableName = "drank";
+  final String _drankIdName = "id";
+  final String _drankKeyName = "day";
+  final String _drankContentName = "water";
 
   DatabaseService._constructor();
 
@@ -28,14 +31,22 @@ class DatabaseService {
     final databasePath = join(databaseDirPath, "master_db.db");
     final database = await openDatabase(
       databasePath,
-      version: 4,
+      version: 5,
       onCreate: (db, version) {
-        debugPrint("Database oluşturuluyor");
+        debugPrint("Database Oluşturuyor");
+        debugPrint("Drip Table Oluşturuluyor");
         db.execute("""
-          CREATE TABLE $_tasksTableName (
-            $_tasksIdColumnName INTEGER PRIMARY KEY,
-            $_tasksKeyColumnName TEXT NOT NULL,
-            $_tasksContentColumnName INTEGER NOT NULL
+          CREATE TABLE $_dripsTableName (
+            $_dripsIdColumnName INTEGER PRIMARY KEY,
+            $_dripsKeyColumnName TEXT NOT NULL,
+            $_dripsContentColumnName TEXT NOT NULL
+          )
+        """);
+        db.execute("""
+          CREATE TABLE $_drankTableName (
+            $_drankIdName INTEGER PRIMARY KEY,
+            $_drankKeyName TEXT NOT NULL,
+            $_drankContentName INTEGER NOT NULL
           )
         """);
       },
@@ -43,44 +54,67 @@ class DatabaseService {
     return database;
   }
 
-  Future<void> addRow(String key, int content) async {
+  Future<void> addRow(String key, dynamic content) async {
     final db = await database;
-    await db.insert(_tasksTableName, {
-      _tasksKeyColumnName: key,
-      _tasksContentColumnName: content,
+    await db.insert(_dripsTableName, {
+      _dripsKeyColumnName: key,
+      _dripsContentColumnName: content,
+    });
+  }
+
+  Future<void> addRowWater(String key, dynamic content) async {
+    final db = await database;
+    await db.insert(_drankTableName, {
+      _drankKeyName: key,
+      _drankContentName: content,
     });
   }
 
   Future<List<Drip>?> getDrip() async {
     final db = await database;
-    final data = await db.query(_tasksTableName);
+    final data = await db.query(_dripsTableName);
     List<Drip> drips = data
         .map(
           (e) => Drip(
             id: e["id"] as int,
             key: e["key"] as String,
-            content: e["content"] as int,
+            content: e["content"],
           ),
         )
         .toList();
     return drips;
   }
 
+  Future<List<Water>?> getWater() async {
+    final db = await database;
+    final data = await db.query(_drankTableName);
+    List<Water> waters = data
+        .map(
+          (e) => Water(
+            id: e["id"] as int,
+            key: e["key"] as String,
+            content: e["content"] as int,
+          ),
+        )
+        .toList();
+    return waters;
+  }
+
   void printd() async {
     final db = await database;
-    final data = await db.query(_tasksTableName);
+    final data = await db.query(_dripsTableName);
     debugPrint(data.toString());
   }
 
-  void updateDailyGoal(int id, int dailyGoal) async {
+  Future<void> updateDailyGoal(int id, dynamic dailyGoal) async {
     final db = await database;
     await db.update(
-      _tasksTableName,
-      {_tasksContentColumnName: dailyGoal},
+      _dripsTableName,
+      {_dripsContentColumnName: dailyGoal},
       where: "id = ?",
       whereArgs: [id],
     );
-    final data = await db.query(_tasksTableName);
+    final data = await db.query(_dripsTableName);
     debugPrint(data.toString());
   }
 }
