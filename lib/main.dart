@@ -6,17 +6,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get_navigation/get_navigation.dart';
 
-void main() => runApp(
-  ScreenUtilInit(
-    designSize: Size(
-      430,
-      932,
+void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  runApp(
+    ScreenUtilInit(
+      designSize: Size(430, 932),
+      builder: (context, child) {
+        return MyApp();
+      },
     ),
-    builder: (context, child) {
-      return MyApp();
-    },
-  ),
-);
+  );
+}
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});

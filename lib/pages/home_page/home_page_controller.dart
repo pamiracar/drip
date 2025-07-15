@@ -35,7 +35,7 @@ class HomePageController extends GetxController {
 
   Future<void> addDailyGoal() async {
     final List<Drip>? dripList = await databaseService.getDrip();
-    if (dripList!.isEmpty) {
+    if (dripList == null || dripList.isEmpty) {
       await databaseService.addRow("daily_goal", 12);
       await databaseService.addRow("drank_water", 0);
     }
@@ -68,7 +68,7 @@ class HomePageController extends GetxController {
 
   Future<void> _loadDrankWater() async {
     final List<Drip>? dripList = await databaseService.getDrip();
-    if (dripList != null && dripList.isNotEmpty) {
+    if (dripList != null && dripList.length > 1) {
       final Drip secondDrip = dripList[1];
 
       debugPrint(secondDrip.id.toString());
@@ -80,11 +80,15 @@ class HomePageController extends GetxController {
   }
 
   @override
-  void onInit(){
+  void onInit() async {
     super.onInit();
-    addDailyGoal();
-    _loadWaterGoal();
-    _loadDrankWater();
+    await _initData();
+  }
+
+  Future<void> _initData() async {
+    await addDailyGoal();
+    await _loadWaterGoal();
+    await _loadDrankWater();
     databaseService.printd();
   }
 }
