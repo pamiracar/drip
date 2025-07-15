@@ -1,4 +1,4 @@
-abstract class AppRoutes{
+abstract class AppRoutes {
   static String HOME = "/home";
-  static String SETTINGS = "/settings";
+  static String PROFILE = "/profile";
 }

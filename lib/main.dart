@@ -1,6 +1,8 @@
 import 'package:drip/app_routes.dart';
 import 'package:drip/pages/home_page/home_page.dart';
 import 'package:drip/pages/home_page/home_page_binding.dart';
+import 'package:drip/pages/profile_page/profile_page.dart';
+import 'package:drip/pages/profile_page/profile_page_binding.dart';
 import 'package:drip/theme/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -31,6 +33,11 @@ class MyApp extends StatelessWidget {
           name: AppRoutes.HOME,
           page: () => HomePage(),
           binding: HomePageBinding(),
+        ),
+        GetPage(
+          name: AppRoutes.PROFILE,
+          page: () => ProfilePage(),
+          binding: ProfilePageBinding(),
         ),
       ],
       theme: AppTheme.lightTheme,

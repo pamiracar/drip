@@ -17,7 +17,6 @@ class AppColors {
   static const Color lightOnSurface = Color(0xFF000000);
   static const Color lightOnError = Color(0xFFFFFFFF);
 
-
   // Common Colors
   static const Color white = Color(0xFFFFFFFF);
   static const Color black = Color(0xFF000000);
@@ -122,60 +121,39 @@ class AppTheme {
     ),
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(
-        foregroundColor: AppColors.lightOnPrimary, backgroundColor: AppColors.lightPrimary,
+        foregroundColor: AppColors.lightOnPrimary,
+        backgroundColor: AppColors.lightPrimary,
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8),
-
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
       ),
-    ),),
+    ),
     inputDecorationTheme: InputDecorationTheme(
       filled: true,
       fillColor: AppColors.lightBackground,
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(8),
-        borderSide: const BorderSide(
-          color: AppColors.lightPrimary,
-        ),
+        borderSide: const BorderSide(color: AppColors.lightPrimary),
       ),
       enabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(8),
-        borderSide: const BorderSide(
-          color: AppColors.lightPrimary,
-        ),
+        borderSide: const BorderSide(color: AppColors.lightPrimary),
       ),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(8),
-        borderSide: const BorderSide(
-          color: AppColors.lightPrimary,
-          width: 2,
-        ),
+        borderSide: const BorderSide(color: AppColors.lightPrimary, width: 2),
       ),
       errorBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(8),
-        borderSide: const BorderSide(
-          color: AppColors.lightError,
-        ),
+        borderSide: const BorderSide(color: AppColors.lightError),
       ),
       focusedErrorBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(8),
-        borderSide: const BorderSide(
-          color: AppColors.lightError,
-          width: 2,
-        ),
+        borderSide: const BorderSide(color: AppColors.lightError, width: 2),
       ),
-      contentPadding: const EdgeInsets.symmetric(
-        horizontal: 16,
-        vertical: 12,
-      ),
-      labelStyle: const TextStyle(
-        color: AppColors.lightOnBackground,
-      ),
-      hintStyle: const TextStyle(
-        color: AppColors.lightOnBackground,
-      ),
+      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      labelStyle: const TextStyle(color: AppColors.lightOnBackground),
+      hintStyle: const TextStyle(color: AppColors.lightOnBackground),
     ),
-
   );
 }
 
@@ -201,10 +179,7 @@ class HealthCard extends StatelessWidget {
       elevation: elevation,
       margin: margin ?? Theme.of(context).cardTheme.margin,
       shape: Theme.of(context).cardTheme.shape,
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: child,
-      ),
+      child: Padding(padding: const EdgeInsets.all(16), child: child),
     );
   }
 }
@@ -263,10 +238,7 @@ class PrimaryButton extends StatelessWidget {
       width: isFullWidth ? double.infinity : null,
       child: ElevatedButton(
         onPressed: onPressed,
-        child: Text(
-          text,
-          style: AppTextStyles.button(context),
-        ),
+        child: Text(text, style: AppTextStyles.button(context)),
       ),
     );
   }
@@ -292,9 +264,9 @@ class SecondaryButton extends StatelessWidget {
         onPressed: onPressed,
         child: Text(
           text,
-          style: AppTextStyles.button(context)?.copyWith(
-            color: Theme.of(context).colorScheme.primary,
-          ),
+          style: AppTextStyles.button(
+            context,
+          )?.copyWith(color: Theme.of(context).colorScheme.primary),
         ),
       ),
     );

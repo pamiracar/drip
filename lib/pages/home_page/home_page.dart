@@ -1,5 +1,7 @@
+import 'package:drip/app_routes.dart';
 import 'package:drip/pages/home_page/home_page_controller.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:get/get_state_manager/get_state_manager.dart';
 import 'package:lottie/lottie.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
@@ -17,6 +19,9 @@ class HomePage extends GetView<HomePageController> {
           style: TextStyle(fontWeight: FontWeight.w300),
         ),
         centerTitle: true,
+        actions: [
+          IconButton(onPressed:() => Get.toNamed(AppRoutes.PROFILE), icon: Icon(Icons.person_outlined))
+        ],
       ),
       body: SingleChildScrollView(
         child: Center(
@@ -28,8 +33,23 @@ class HomePage extends GetView<HomePageController> {
                 SizedBox(height: 5),
                 _DailyGoalCard(controller: controller),
                 SizedBox(height: 40),
-                Text('"${controller.randomQuote?["quote"]}"', textAlign: TextAlign.center, style: TextStyle(color: Colors.grey, fontWeight: FontWeight.w300),),
-                Text("~ ${controller.randomQuote?["author"]}", textAlign: TextAlign.center, style: TextStyle(fontStyle: FontStyle.italic, color:  Colors.grey, fontWeight: FontWeight.w300),),
+                Text(
+                  '"${controller.randomQuote?["quote"]}"',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: Colors.grey,
+                    fontWeight: FontWeight.w300,
+                  ),
+                ),
+                Text(
+                  "~ ${controller.randomQuote?["author"]}",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontStyle: FontStyle.italic,
+                    color: Colors.grey,
+                    fontWeight: FontWeight.w300,
+                  ),
+                ),
               ],
             ),
           ),
@@ -237,7 +257,7 @@ class _StreakCardState extends State<_StreakCard> {
                       maxLines: 2,
                       textAlign: TextAlign.center,
                     ),
-                    SizedBox(height: 20,),
+                    SizedBox(height: 20),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -253,7 +273,7 @@ class _StreakCardState extends State<_StreakCard> {
                           style: TextStyle(
                             fontWeight: FontWeight.w300,
                             fontSize: 30,
-                            color: Colors.deepOrange
+                            color: Colors.deepOrange,
                           ),
                         ),
                       ],
