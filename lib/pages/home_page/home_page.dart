@@ -121,7 +121,7 @@ class _DailyGoalCardState extends State<_DailyGoalCard> {
                           ),
                           Obx(
                             () => Text(
-                              "Daily Goal: ${widget.controller.waterGoal.value}",
+                              "Daily Goal: ${widget.controller.waterGoal.value} mL",
                               style: TextStyle(
                                 color: Theme.of(context).primaryColor,
                               ),
@@ -134,7 +134,7 @@ class _DailyGoalCardState extends State<_DailyGoalCard> {
                           SizedBox(
                             width: 130,
                             child: ElevatedButton(
-                              onPressed: widget.controller.incrementWater,
+                              onPressed:() => widget.controller.drinkWater(context),
                               child: Padding(
                                 padding: const EdgeInsets.symmetric(
                                   horizontal: 0.0,
@@ -174,7 +174,7 @@ class _DailyGoalCardState extends State<_DailyGoalCard> {
                 style: TextStyle(fontWeight: FontWeight.w300),
                 decoration: InputDecoration(
                   hint: Text(
-                    "Update Daily Goal",
+                    "Update Daily Goal (mL)",
                     style: TextStyle(fontWeight: FontWeight.w300),
                   ),
                 ),

@@ -94,13 +94,13 @@ class ProfilePage extends GetView<ProfilePageController> {
                                       getTitlesWidget: (value, meta) {
                                         final index = value.toInt();
                                         final days = [
-                                          'Mon',
-                                          'Tue',
-                                          'Wed',
-                                          'Thu',
-                                          'Fri',
-                                          'Sat',
-                                          'Sun',
+                                          '',
+                                          '',
+                                          '',
+                                          '',
+                                          '',
+                                          '',
+                                          '',
                                         ];
                                         return Text(
                                           days[index],

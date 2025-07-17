@@ -7,14 +7,18 @@ import 'package:drip/quotes.dart';
 import 'package:drip/services/db_service.dart';
 import 'package:flutter/material.dart';
 import 'package:get/state_manager.dart';
+import 'package:path/path.dart';
 
 class HomePageController extends GetxController {
   RxInt waterGoal = 12.obs;
   RxInt waterDrank = 0.obs;
   TextEditingController goalController = TextEditingController();
+  TextEditingController waterValueController = TextEditingController();
   final DatabaseService databaseService = DatabaseService.instance;
   RxInt streakDay = 0.obs;
   RxInt streakGoal = 10.obs;
+  RxInt selectedWaterML = 220.obs;
+
 
   double get waterPercentage =>
       waterGoal.value == 0 ? 0 : waterDrank.value / waterGoal.value;
@@ -160,14 +164,150 @@ class HomePageController extends GetxController {
     return quotes[randomIndex];
   }
 
+  Future<void> resetIfNeeded() async {
+    final List<Drip>? dripList = await databaseService.getDrip();
+    if (dripList == null) return;
+
+    DateTime? lastUpdated;
+    int drank = 0;
+    int goal = 0;
+
+    for (var drip in dripList) {
+      if (drip.key == "last_updated") {
+        lastUpdated = DateTime.tryParse(drip.content.toString());
+      } else if (drip.key == "drank_water") {
+        drank = int.tryParse(drip.content.toString()) ?? 0;
+      } else if (drip.key == "daily_goal") {
+        goal = int.tryParse(drip.content.toString()) ?? 0;
+      }
+    }
+
+    final DateTime today = DateTime.now();
+    final DateTime yesterday = today.subtract(Duration(days: 1));
+    final String todayString = "${today.year}-${today.month}-${today.day}";
+
+    if (lastUpdated == null) return;
+
+    if (isSameDay(lastUpdated, today)) return;
+
+    if (isSameDay(lastUpdated, yesterday) && drank >= goal) {
+      streakDay.value++;
+    } else {
+      streakDay.value = 0;
+    }
+
+    waterDrank.value = 0;
+    await databaseService.updateDailyGoal(2, 0);
+    await databaseService.updateDailyGoal(3, streakDay.value);
+    await databaseService.updateDailyGoal(4, todayString);
+  }
+
   Map<String, String>? randomQuote;
+
+  int? waterValue = 0;
+
+
+  void drinkWater(BuildContext context) {
+    incrementWater();
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+      title: const Text("Add Water"),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Obx(
+            () => RadioListTile<int>(
+              value: 100,
+              groupValue: selectedWaterML.value,
+              onChanged: (value) => selectedWaterML.value = value!,
+              title: const Text(
+                "Small Water Glass",
+                style: TextStyle(fontWeight: FontWeight.w300),
+              ),
+              subtitle: const Text(
+                "~100mL",
+                style: TextStyle(
+                  fontWeight: FontWeight.w300,
+                  color: Colors.grey,
+                ),
+              ),
+            ),
+          ),
+          Obx(
+            () => RadioListTile<int>(
+              value:220,
+              groupValue: selectedWaterML.value,
+              onChanged: (value) => selectedWaterML.value = value!,
+              title: const Text(
+                "Regular Water Glass",
+                style: TextStyle(fontWeight: FontWeight.w300),
+              ),
+              subtitle: const Text(
+                "~220mL",
+                style: TextStyle(
+                  fontWeight: FontWeight.w300,
+                  color: Colors.grey,
+                ),
+              ),
+            ),
+          ),
+          Obx(
+            () => RadioListTile<int>(
+              value: 500,
+              groupValue: selectedWaterML.value,
+              onChanged: (value) => selectedWaterML.value = value!,
+              title: const Text(
+                "Jumbo Water Glass",
+                style: TextStyle(fontWeight: FontWeight.w300),
+              ),
+              subtitle: const Text(
+                "~500mL",
+                style: TextStyle(
+                  fontWeight: FontWeight.w300,
+                  color: Colors.grey,
+                ),
+              ),
+            ),
+          ),
+          Obx(
+            () => RadioListTile<int>(
+              value:waterValue,
+              groupValue: selectedWaterML.value,
+              onChanged: (value) {
+                selectedWaterML.value = value!;
+                waterValue = int.tryParse(waterValueController.text);
+                debugPrint(value.toString());
+              },
+              title: TextFormField(
+                controller: waterValueController,
+                decoration: InputDecoration(
+                  suffix: const Text(" mL")
+                ),
+                keyboardType: TextInputType.number,
+              ),
+              subtitle: const Text(
+                "Select custom value (mL)",
+                style: TextStyle(
+                  fontWeight: FontWeight.w300,
+                  color: Colors.grey,
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+      },
+    );
+  }
 
   @override
   void onInit() async {
     super.onInit();
     await _initData();
-    await databaseService.ensureTodayDrankExist;
-    await checkStreakStatus();
+    await resetIfNeeded();
   }
 
   Future<void> _initData() async {
