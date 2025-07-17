@@ -166,6 +166,7 @@ class HomePageController extends GetxController {
   void onInit() async {
     super.onInit();
     await _initData();
+    await databaseService.ensureTodayDrankExist;
     await checkStreakStatus();
   }
 

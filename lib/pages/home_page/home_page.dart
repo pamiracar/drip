@@ -20,7 +20,7 @@ class HomePage extends GetView<HomePageController> {
         ),
         centerTitle: true,
         actions: [
-          IconButton(onPressed:() => Get.toNamed(AppRoutes.PROFILE), icon: Icon(Icons.person_outlined))
+          IconButton(onPressed:() => Get.toNamed(AppRoutes.PROFILE), icon: Icon(Icons.bar_chart_rounded))
         ],
       ),
       body: SingleChildScrollView(

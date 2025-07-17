@@ -3,6 +3,7 @@ import 'package:drip/models/water.dart';
 import 'package:flutter/material.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
+import 'package:intl/intl.dart';
 
 class DatabaseService {
   static Database? _db;
@@ -31,7 +32,7 @@ class DatabaseService {
     final databasePath = join(databaseDirPath, "master_db.db");
     final database = await openDatabase(
       databasePath,
-      version: 5,
+      version: 6,
       onCreate: (db, version) {
         debugPrint("Database Oluşturuyor");
         debugPrint("Drip Table Oluşturuluyor");
@@ -117,4 +118,61 @@ class DatabaseService {
     final data = await db.query(_dripsTableName);
     debugPrint(data.toString());
   }
+
+  Future<void> ensureTodayDrankExist() async {
+    final db = await database;
+    String today = DateFormat("yyyy-MM-dd").format(DateTime.now());
+
+    final result = await db.query(
+      _drankTableName,
+      where: "$_drankKeyName = ?",
+      whereArgs: [today],
+    );
+
+    if (result.isEmpty) {
+      await addRowWater(today, 0);
+    }
+  }
+
+  Future<void> addWaterToToday(int ml) async {
+    final db = await database;
+    String today = DateFormat("yyyy-MM-dd").format(DateTime.now());
+
+    await db.rawUpdate(
+      """
+      UPDATE $_drankTableName
+      SET $_drankContentName = $_drankContentName + ?
+      WHERE $_drankKeyName = ?
+      """,
+      [ml, today],
+    );
+  }
+
+  Future<List<Map<String, dynamic>>> getLast7DaysNormalizedWater() async {
+  final db = await database;
+  DateTime today = DateTime.now();
+  List<String> last7Dates = List.generate(
+    7,
+    (i) => DateFormat('yyyy-MM-dd').format(today.subtract(Duration(days: 6 - i))),
+  );
+
+  final result = await db.query(
+    _drankTableName,
+    where: "$_drankKeyName IN (${List.filled(7, '?').join(',')})",
+    whereArgs: last7Dates,
+  );
+
+  Map<String, int> drankMap = {
+    for (var e in result) e[_drankKeyName] as String: e[_drankContentName] as int,
+  };
+
+  return last7Dates.map((date) {
+    final dayName = DateFormat('E', 'en_US').format(DateTime.parse(date));
+    return {
+      'day': dayName,
+      'amount': (drankMap[date] ?? 0).toDouble(),
+    };
+  }).toList();
+}
+
 }
