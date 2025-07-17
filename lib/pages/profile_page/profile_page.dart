@@ -10,6 +10,7 @@ class ProfilePage extends GetView<ProfilePageController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         title: const Text(
           "Your Water Stats",

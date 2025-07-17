@@ -13,6 +13,7 @@ class HomePage extends GetView<HomePageController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         title: const Text(
           "Drip - Your Water Tracker",
@@ -97,9 +98,9 @@ class _DailyGoalCardState extends State<_DailyGoalCard> {
                           ),
                           circularStrokeCap: CircularStrokeCap.round,
                           center: Text(
-                            "${widget.controller.waterDrank.value}",
+                            "${widget.controller.waterDrank.value} mL",
                             style: TextStyle(
-                              fontSize: 18,
+                              fontSize: 17,
                               fontWeight: FontWeight.w300,
                             ),
                           ),

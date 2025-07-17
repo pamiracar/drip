@@ -119,6 +119,9 @@ class AppTheme {
         ),
       ),
     ),
+    textTheme: TextTheme(
+
+    ).apply(fontFamily: "inter"),
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(
         foregroundColor: AppColors.lightOnPrimary,
