@@ -131,6 +131,9 @@ class DatabaseService {
 
     if (result.isEmpty) {
       await addRowWater(today, 0);
+      debugPrint("Row added");
+    } else {
+      debugPrint("There was a row already");
     }
   }
 
