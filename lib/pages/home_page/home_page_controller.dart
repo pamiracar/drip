@@ -1,4 +1,4 @@
-// ignore_for_file: unused_local_variable
+// ignore_for_file: unused_local_variable, unnecessary_nullable_for_final_variable_declarations
 
 import 'dart:math';
 
@@ -29,15 +29,19 @@ class HomePageController extends GetxController {
       streakGoal.value == 0 ? 0 : streakDay.value / streakGoal.value;
 
   void incrementWater({required int water}) {
+    final DateTime todayDateTime = DateTime.now();
+    final String today = DateFormat("yyyy-MM-dd").format(todayDateTime);
     waterDrank.value = waterDrank.value + water;
-    databaseService.updateDailyGoal(2, waterDrank.value);
+    databaseService.updateDrankWater(today, waterDrank.value);
     debugPrint("update of drank successfully completed");
     databaseService.printd();
   }
 
   void resetWater() {
+    final String today = DateFormat("yyyy-MM-dd").format(DateTime.now());
     waterDrank.value = 0;
-    databaseService.updateDailyGoal(2, waterDrank.value);
+    databaseService.updateDrankWater(today, waterDrank.value);
+    databaseService.updateDailyGoal(4, today);
     debugPrint("drank deleted");
     databaseService.printd();
   }
@@ -60,7 +64,8 @@ class HomePageController extends GetxController {
 
   void updateDailyGoal() {
     final String dailyGoalString = goalController.text;
-    if (dailyGoalString == "") return;
+    if (dailyGoalString.isEmpty || int.tryParse(dailyGoalString) == null)
+      return;
     final int dailyGoal = int.parse(dailyGoalString);
 
     databaseService.updateDailyGoal(1, dailyGoal);
@@ -93,16 +98,13 @@ class HomePageController extends GetxController {
   }
 
   Future<void> _loadDrankWater() async {
-    final List<Drip>? dripList = await databaseService.getDrip();
-    if (dripList != null && dripList.length > 1) {
-      final Drip secondDrip = dripList[1];
-
-      debugPrint(secondDrip.id.toString());
-      debugPrint(secondDrip.key);
-      debugPrint(secondDrip.content.toString());
-
-      waterDrank.value = int.tryParse(secondDrip.content.toString())!;
-    }
+    final List<Water>? waterList = await databaseService.getWater();
+    final String today = DateFormat("yyyy-MM-dd").format(DateTime.now());
+    final List<Water> filteredList = waterList!
+        .where((element) => element.key == today)
+        .toList();
+    final Water todayWater = filteredList.first;
+    waterDrank.value = todayWater.content;
   }
 
   bool isSameDay(DateTime a, DateTime b) {
@@ -267,37 +269,49 @@ class HomePageController extends GetxController {
 
   Future<void> checkForStreak() async {
     await databaseService.ensureTodayDrankExist();
+
     debugPrint("we are sure that there is a row for today");
     final List<Drip>? dripList = await databaseService.getDrip();
     final List<Water>? waterList = await databaseService.getWater();
-    final String yesterday = DateFormat(
-      "yyyy-MM-dd",
-    ).format(DateTime.now().subtract(Duration(days: 1)));
-    final yesterdayWater = waterList!.firstWhere(
-      (element) => element.key == yesterday,
-    );
     final dripThird = dripList!.firstWhere((e) => e.key == "last_updated");
     final String today = DateFormat("yyyy-MM-dd").format(DateTime.now());
-
     final String lastUpdatedString = dripThird.content.toString();
     final DateTime? todayDateTime = DateTime.tryParse(today);
     final DateTime? lastUpdated = DateTime.tryParse(
       dripThird.content.toString(),
     );
+    final diff = todayDateTime?.difference(lastUpdated!).inDays;
+    final String yesterday = DateFormat(
+      "yyyy-MM-dd",
+    ).format(DateTime.now().subtract(Duration(days: 1)));
+    final List<Water> filteredList = waterList!
+        .where((element) => element.key == yesterday)
+        .toList();
+    if (filteredList.isEmpty || diff! >= 2) {
+      debugPrint("Dünkü veri yok");
+
+      streakDay.value = 0;
+      databaseService.updateDailyGoal(3, streakDay.value);
+      debugPrint("Streak reseted!");
+      return;
+    }
+    final Water yesterdayWater = filteredList.first;
+
     if (lastUpdated == null) return;
-    final diff = todayDateTime?.difference(lastUpdated).inDays;
     if (diff == 1) {
       debugPrint("One missing day");
       debugPrint("Waterdrank before value = ${waterDrank.value}");
-      await databaseService.updateDrankWater(yesterday, waterDrank.value);
       debugPrint("Update Completed");
       resetWater();
       debugPrint("Water Drank Value: ${waterDrank.value}");
-      final int yesterdayWaterConent = int.tryParse(yesterdayWater.content.toString())!;
+      final int yesterdayWaterConent = int.tryParse(
+        yesterdayWater.content.toString(),
+      )!;
       if (yesterdayWaterConent >= waterGoal.value) {
         streakDay.value++;
         databaseService.updateDailyGoal(3, streakDay.value);
         debugPrint("StreakUpdated: ${streakDay.value}");
+        databaseService.updateDailyGoal(4, today);
       } else {
         streakDay.value = 0;
         databaseService.updateDailyGoal(3, streakDay.value);
@@ -325,13 +339,13 @@ class HomePageController extends GetxController {
   void onInit() async {
     super.onInit();
     await _initData();
-    await checkForStreak();
     await _loadStreak();
   }
 
   Future<void> _initData() async {
     randomQuote = getRandomQuote(motivationalQuotes);
     await addDailyGoal();
+    await checkForStreak();
     await _loadWaterGoal();
     await _loadDrankWater();
     databaseService.printd();

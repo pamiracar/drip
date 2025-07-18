@@ -21,7 +21,10 @@ class HomePage extends GetView<HomePageController> {
         ),
         centerTitle: true,
         actions: [
-          IconButton(onPressed:() => Get.toNamed(AppRoutes.PROFILE), icon: Icon(Icons.bar_chart_rounded))
+          IconButton(
+            onPressed: () => Get.toNamed(AppRoutes.PROFILE),
+            icon: Icon(Icons.bar_chart_rounded),
+          ),
         ],
       ),
       body: SingleChildScrollView(
@@ -135,7 +138,8 @@ class _DailyGoalCardState extends State<_DailyGoalCard> {
                           SizedBox(
                             width: 130,
                             child: ElevatedButton(
-                              onPressed:() => widget.controller.drinkWater(context),
+                              onPressed: () =>
+                                  widget.controller.drinkWater(context),
                               child: Padding(
                                 padding: const EdgeInsets.symmetric(
                                   horizontal: 0.0,
@@ -259,25 +263,27 @@ class _StreakCardState extends State<_StreakCard> {
                       textAlign: TextAlign.center,
                     ),
                     SizedBox(height: 20),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        const Text(
-                          "Day: ",
-                          style: TextStyle(
-                            fontWeight: FontWeight.w300,
-                            fontSize: 30,
+                    Obx(
+                      () => Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Text(
+                            "Day: ",
+                            style: TextStyle(
+                              fontWeight: FontWeight.w300,
+                              fontSize: 30,
+                            ),
                           ),
-                        ),
-                        Text(
-                          "${widget.controller.streakDay.value}",
-                          style: TextStyle(
-                            fontWeight: FontWeight.w300,
-                            fontSize: 30,
-                            color: Colors.deepOrange,
+                          Text(
+                            "${widget.controller.streakDay.value}",
+                            style: TextStyle(
+                              fontWeight: FontWeight.w300,
+                              fontSize: 30,
+                              color: Colors.deepOrange,
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ],
                 ),

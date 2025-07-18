@@ -40,17 +40,22 @@ class ProfilePage extends GetView<ProfilePageController> {
                           Expanded(
                             child: LineChart(
                               LineChartData(
+
+                                minY: 0,
+                                lineTouchData: LineTouchData(enabled: true),
                                 lineBarsData: [
                                   LineChartBarData(
                                     spots: spots,
-                                    isCurved: true,
+                                    isCurved: false,
                                     barWidth: 2,
                                     color: const Color(0xFF7EB6FF),
                                     isStrokeCapRound: true,
-                                    dotData: FlDotData(show: false),
+                                    dotData: FlDotData(show: true),
                                     belowBarData: BarAreaData(
                                       show: true,
-                                      color: const Color(0xFF7EB6FF).withOpacity(0.2),
+                                      color: Theme.of(
+                                        context,
+                                      ).primaryColor.withAlpha(200),
                                     ),
                                   ),
                                 ],
@@ -59,7 +64,7 @@ class ProfilePage extends GetView<ProfilePageController> {
                                   drawVerticalLine: true,
                                   horizontalInterval: 1,
                                   getDrawingHorizontalLine: (value) => FlLine(
-                                    color: Colors.grey.withOpacity(0.1),
+                                    color: Colors.transparent,
                                     strokeWidth: 1,
                                   ),
                                 ),
@@ -78,14 +83,10 @@ class ProfilePage extends GetView<ProfilePageController> {
                                     ),
                                   ),
                                   topTitles: AxisTitles(
-                                    sideTitles: SideTitles(
-                                      showTitles: false,
-                                    ), // BURASI EKLENDİ
+                                    sideTitles: SideTitles(showTitles: false),
                                   ),
                                   rightTitles: AxisTitles(
-                                    sideTitles: SideTitles(
-                                      showTitles: false,
-                                    ), // Sağdaki sayıları da kapatır
+                                    sideTitles: SideTitles(showTitles: false),
                                   ),
                                   bottomTitles: AxisTitles(
                                     sideTitles: SideTitles(
@@ -117,7 +118,6 @@ class ProfilePage extends GetView<ProfilePageController> {
                                 ),
 
                                 borderData: FlBorderData(show: false),
-                                minY: 0,
                               ),
                             ),
                           ),
@@ -128,23 +128,23 @@ class ProfilePage extends GetView<ProfilePageController> {
                 ),
               ),
               SizedBox(height: 100.h),
-                Text(
-                  '"${controller.randomQuote?["quote"]}"',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    color: Colors.grey,
-                    fontWeight: FontWeight.w300,
-                  ),
+              Text(
+                '"${controller.randomQuote?["quote"]}"',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: Colors.grey,
+                  fontWeight: FontWeight.w300,
                 ),
-                Text(
-                  "~ ${controller.randomQuote?["author"]}",
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontStyle: FontStyle.italic,
-                    color: Colors.grey,
-                    fontWeight: FontWeight.w300,
-                  ),
+              ),
+              Text(
+                "~ ${controller.randomQuote?["author"]}",
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontStyle: FontStyle.italic,
+                  color: Colors.grey,
+                  fontWeight: FontWeight.w300,
                 ),
+              ),
             ],
           ),
         ),

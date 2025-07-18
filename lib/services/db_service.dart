@@ -21,6 +21,7 @@ class DatabaseService {
 
   DatabaseService._constructor();
 
+
   Future<Database> get database async {
     if (_db != null) return _db!;
     _db = await getDatabase();
@@ -32,7 +33,7 @@ class DatabaseService {
     final databasePath = join(databaseDirPath, "master_db.db");
     final database = await openDatabase(
       databasePath,
-      version: 6,
+      version: 7,
       onCreate: (db, version) {
         debugPrint("Database Oluşturuyor");
         debugPrint("Drip Table Oluşturuluyor");
@@ -93,8 +94,8 @@ class DatabaseService {
         .map(
           (e) => Water(
             id: e["id"] as int,
-            key: e["key"] as String,
-            content: e["content"] as int,
+            key: e["day"] as String,
+            content: e["water"] as int,
           ),
         )
         .toList();
@@ -124,7 +125,7 @@ class DatabaseService {
     await db.update(
       _drankTableName,
       {_drankContentName: content,},
-      where: "id = ?",
+      where: "day = ?",
       whereArgs: [key],
     );
     final data = await db.query(_drankTableName);
