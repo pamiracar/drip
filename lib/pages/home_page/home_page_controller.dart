@@ -8,6 +8,7 @@ import 'package:drip/quotes.dart';
 import 'package:drip/services/db_service.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 
 class HomePageController extends GetxController {
   RxInt waterGoal = 2500.obs;
@@ -47,13 +48,13 @@ class HomePageController extends GetxController {
   }
 
   Future<void> addDailyGoal() async {
-    DateTime date = DateTime.now();
+    String date = DateFormat("yyyy-MM-dd").format(DateTime.now());
     final List<Drip>? dripList = await databaseService.getDrip();
     if (dripList == null || dripList.isEmpty) {
       await databaseService.addRow("daily_goal", 2500);
       await databaseService.addRow("drank_water", 0);
       await databaseService.addRow("streak", 0);
-      await databaseService.addRow("last_updated", date.toIso8601String());
+      await databaseService.addRow("last_updated", date);
     }
   }
 
@@ -79,6 +80,15 @@ class HomePageController extends GetxController {
       debugPrint(ilkDrip.content.toString());
 
       waterGoal.value = int.tryParse(ilkDrip.content.toString())!;
+    }
+  }
+
+  Future<void> _loadStreak() async {
+    final List<Drip>? dripList = await databaseService.getDrip();
+
+    if (dripList != null && dripList.isNotEmpty) {
+      final Drip thirdDrip = dripList[2];
+      streakGoal.value = int.tryParse(thirdDrip.content.toString())!;
     }
   }
 
@@ -259,17 +269,48 @@ class HomePageController extends GetxController {
     await databaseService.ensureTodayDrankExist();
     debugPrint("we are sure that there is a row for today");
     final List<Drip>? dripList = await databaseService.getDrip();
+    final List<Water>? waterList = await databaseService.getWater();
+    final String yesterday = DateFormat(
+      "yyyy-MM-dd",
+    ).format(DateTime.now().subtract(Duration(days: 1)));
+    final yesterdayWater = waterList!.firstWhere(
+      (element) => element.key == yesterday,
+    );
     final dripThird = dripList!.firstWhere((e) => e.key == "last_updated");
-    final DateTime today = DateTime.now();
+    final String today = DateFormat("yyyy-MM-dd").format(DateTime.now());
+
+    final String lastUpdatedString = dripThird.content.toString();
+    final DateTime? todayDateTime = DateTime.tryParse(today);
     final DateTime? lastUpdated = DateTime.tryParse(
       dripThird.content.toString(),
     );
     if (lastUpdated == null) return;
-    final diff = today.difference(lastUpdated).inDays;
-    if (diff == 2) {
+    final diff = todayDateTime?.difference(lastUpdated).inDays;
+    if (diff == 1) {
       debugPrint("One missing day");
+      debugPrint("Waterdrank before value = ${waterDrank.value}");
+      await databaseService.updateDrankWater(yesterday, waterDrank.value);
+      debugPrint("Update Completed");
+      resetWater();
+      debugPrint("Water Drank Value: ${waterDrank.value}");
+      final int yesterdayWaterConent = int.tryParse(yesterdayWater.content.toString())!;
+      if (yesterdayWaterConent >= waterGoal.value) {
+        streakDay.value++;
+        databaseService.updateDailyGoal(3, streakDay.value);
+        debugPrint("StreakUpdated: ${streakDay.value}");
+      } else {
+        streakDay.value = 0;
+        databaseService.updateDailyGoal(3, streakDay.value);
+        debugPrint("Streak reseted!");
+      }
+    } else if (diff! >= 2) {
+      streakDay.value = 0;
+      databaseService.updateDailyGoal(3, streakDay.value);
+      debugPrint("Streak reseted!");
     } else {
       debugPrint("No problem for now");
+      debugPrint("today = $todayDateTime");
+      debugPrint("last updated = $lastUpdated");
     }
   }
 
@@ -284,8 +325,8 @@ class HomePageController extends GetxController {
   void onInit() async {
     super.onInit();
     await _initData();
-
     await checkForStreak();
+    await _loadStreak();
   }
 
   Future<void> _initData() async {
