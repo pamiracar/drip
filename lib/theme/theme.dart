@@ -160,7 +160,6 @@ class AppTheme {
   );
 }
 
-// Özel Widget'lar
 class HealthCard extends StatelessWidget {
   final Widget child;
   final Color? color;
@@ -168,12 +167,12 @@ class HealthCard extends StatelessWidget {
   final EdgeInsetsGeometry? margin;
 
   const HealthCard({
-    Key? key,
+    super.key,
     required this.child,
     this.color,
     this.elevation = 2,
     this.margin,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -197,7 +196,7 @@ class HealthTextField extends StatelessWidget {
   final String? Function(String?)? validator;
 
   const HealthTextField({
-    Key? key,
+    super.key,
     this.labelText,
     this.hintText,
     this.controller,
@@ -205,7 +204,7 @@ class HealthTextField extends StatelessWidget {
     this.obscureText = false,
     this.suffixIcon,
     this.validator,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -229,11 +228,11 @@ class PrimaryButton extends StatelessWidget {
   final bool isFullWidth;
 
   const PrimaryButton({
-    Key? key,
+    super.key,
     required this.text,
     required this.onPressed,
     this.isFullWidth = true,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -253,11 +252,11 @@ class SecondaryButton extends StatelessWidget {
   final bool isFullWidth;
 
   const SecondaryButton({
-    Key? key,
+    super.key,
     required this.text,
     required this.onPressed,
     this.isFullWidth = true,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -269,7 +268,7 @@ class SecondaryButton extends StatelessWidget {
           text,
           style: AppTextStyles.button(
             context,
-          )?.copyWith(color: Theme.of(context).colorScheme.primary),
+          ).copyWith(color: Theme.of(context).colorScheme.primary),
         ),
       ),
     );

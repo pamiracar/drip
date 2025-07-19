@@ -6,6 +6,7 @@ import 'package:drip/models/drip.dart';
 import 'package:drip/models/water.dart';
 import 'package:drip/quotes.dart';
 import 'package:drip/services/db_service.dart';
+import 'package:drip/services/noti_services.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -64,8 +65,9 @@ class HomePageController extends GetxController {
 
   void updateDailyGoal() {
     final String dailyGoalString = goalController.text;
-    if (dailyGoalString.isEmpty || int.tryParse(dailyGoalString) == null)
+    if (dailyGoalString.isEmpty || int.tryParse(dailyGoalString) == null) {
       return;
+    }
     final int dailyGoal = int.parse(dailyGoalString);
 
     databaseService.updateDailyGoal(1, dailyGoal);
@@ -317,7 +319,7 @@ class HomePageController extends GetxController {
         databaseService.updateDailyGoal(3, streakDay.value);
         debugPrint("Streak reseted!");
       }
-    } else if (diff! >= 2) {
+    } else if (diff >= 2) {
       streakDay.value = 0;
       databaseService.updateDailyGoal(3, streakDay.value);
       debugPrint("Streak reseted!");
@@ -326,6 +328,13 @@ class HomePageController extends GetxController {
       debugPrint("today = $todayDateTime");
       debugPrint("last updated = $lastUpdated");
     }
+  }
+
+  Future<void> notiButton() async {
+    NotiServices().showNotification(
+      title: "Drip",
+      body: "This is an example notification",
+    );
   }
 
   @override

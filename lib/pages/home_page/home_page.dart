@@ -36,6 +36,8 @@ class HomePage extends GetView<HomePageController> {
                 _StreakCard(controller: controller),
                 SizedBox(height: 5),
                 _DailyGoalCard(controller: controller),
+                SizedBox(height: 20,),
+                ElevatedButton(onPressed: controller.notiButton, child: const Text("Notification")),
                 SizedBox(height: 40),
                 Text(
                   '"${controller.randomQuote?["quote"]}"',
@@ -78,6 +80,8 @@ class _DailyGoalCardState extends State<_DailyGoalCard> {
     return SizedBox(
       width: MediaQuery.of(context).size.width,
       child: Card(
+        elevation: 15,
+        shadowColor: Theme.of(context).primaryColor,
         child: Padding(
           padding: const EdgeInsets.all(20.0),
           child: Column(
@@ -222,6 +226,8 @@ class _StreakCardState extends State<_StreakCard> {
     return SizedBox(
       width: MediaQuery.of(context).size.width,
       child: Card(
+        elevation: 15,
+        shadowColor: Theme.of(context).primaryColor,
         child: Padding(
           padding: const EdgeInsets.all(20.0),
           child: Row(

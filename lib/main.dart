@@ -3,6 +3,7 @@ import 'package:drip/pages/home_page/home_page.dart';
 import 'package:drip/pages/home_page/home_page_binding.dart';
 import 'package:drip/pages/profile_page/profile_page.dart';
 import 'package:drip/pages/profile_page/profile_page_binding.dart';
+import 'package:drip/services/noti_services.dart';
 import 'package:drip/theme/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -10,6 +11,7 @@ import 'package:get/get_navigation/get_navigation.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
+  NotiServices().initNotification();
   runApp(
     ScreenUtilInit(
       designSize: Size(430, 932),
