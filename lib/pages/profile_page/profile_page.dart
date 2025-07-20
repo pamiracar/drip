@@ -53,7 +53,7 @@ class ProfilePage extends GetView<ProfilePageController> {
                                 LineChartBarData(
                                   spots: spots,
                                   curveSmoothness: 0.1,
-                                  isCurved: true,
+                                  isCurved: false,
                                   barWidth: 3,
                                   color: Theme.of(context).primaryColor,
                                   isStrokeCapRound: true,

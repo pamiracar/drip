@@ -10,6 +10,7 @@ import 'package:drip/services/noti_services.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class HomePageController extends GetxController {
   RxInt waterGoal = 2500.obs;
@@ -37,6 +38,22 @@ class HomePageController extends GetxController {
     debugPrint("update of drank successfully completed");
     databaseService.printd();
   }
+
+  void requestNotificationPermission() async {
+  if (await Permission.notification.isDenied ||
+      await Permission.notification.isRestricted ||
+      await Permission.notification.isLimited) {
+    final status = await Permission.notification.request();
+
+    if (status.isGranted) {
+      debugPrint("🔔 Bildirim izni verildi");
+    } else {
+      debugPrint("❌ Bildirim izni reddedildi");
+    }
+  } else {
+    debugPrint("✅ Bildirim izni zaten verilmiş");
+  }
+}
 
   void resetWater() {
     final String today = DateFormat("yyyy-MM-dd").format(DateTime.now());
@@ -252,6 +269,9 @@ class HomePageController extends GetxController {
                   debugPrint(
                     "The water gonna be added: ${selectedWaterML.value.toString()}",
                   );
+                  selectedWaterML.value = int.tryParse(
+                    waterValueController.text,
+                  )!;
                   incrementWater(water: selectedWaterML.value);
                   waterValueController.text = "0";
                   selectedWaterML.value = 200;
@@ -349,6 +369,7 @@ class HomePageController extends GetxController {
     super.onInit();
     await _initData();
     await _loadStreak();
+    requestNotificationPermission();
   }
 
   Future<void> _initData() async {
