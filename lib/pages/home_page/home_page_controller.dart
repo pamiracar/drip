@@ -168,6 +168,8 @@ class HomePageController extends GetxController {
                       ),
                       keyboardType: TextInputType.number,
                       onChanged: (value) {
+
+                        selectedWaterML.value = int.tryParse(waterValueController.text.toString())!;
                         debugPrint(
                           "Text Field instant ${waterValueController.text}",
                         );
@@ -269,9 +271,6 @@ class HomePageController extends GetxController {
                   debugPrint(
                     "The water gonna be added: ${selectedWaterML.value.toString()}",
                   );
-                  selectedWaterML.value = int.tryParse(
-                    waterValueController.text,
-                  )!;
                   incrementWater(water: selectedWaterML.value);
                   waterValueController.text = "0";
                   selectedWaterML.value = 200;
@@ -293,68 +292,13 @@ class HomePageController extends GetxController {
     await databaseService.ensureTodayDrankExist();
 
     debugPrint("we are sure that there is a row for today");
-    final List<Drip>? dripList = await databaseService.getDrip();
-    final List<Water>? waterList = await databaseService.getWater();
-    final dripThird = dripList!.firstWhere((e) => e.key == "last_updated");
-    final String today = DateFormat("yyyy-MM-dd").format(DateTime.now());
-    final String lastUpdatedString = dripThird.content.toString();
-    final DateTime? todayDateTime = DateTime.tryParse(today);
-    final DateTime? lastUpdated = DateTime.tryParse(
-      dripThird.content.toString(),
-    );
-    final diff = todayDateTime?.difference(lastUpdated!).inDays;
-    final String yesterday = DateFormat(
-      "yyyy-MM-dd",
-    ).format(DateTime.now().subtract(Duration(days: 1)));
-    final List<Water> filteredList = waterList!
-        .where((element) => element.key == yesterday)
-        .toList();
-    if (filteredList.isEmpty || diff! >= 2) {
-      debugPrint("Dünkü veri yok");
-
-      streakDay.value = 0;
-      databaseService.updateDailyGoal(3, streakDay.value);
-      debugPrint("Streak reseted!");
-      return;
-    }
-    final Water yesterdayWater = filteredList.first;
-
-    if (lastUpdated == null) return;
-    if (diff == 1) {
-      debugPrint("One missing day");
-      debugPrint("Waterdrank before value = ${waterDrank.value}");
-      debugPrint("Update Completed");
-      resetWater();
-      debugPrint("Water Drank Value: ${waterDrank.value}");
-      final int yesterdayWaterConent = int.tryParse(
-        yesterdayWater.content.toString(),
-      )!;
-      if (yesterdayWaterConent >= waterGoal.value) {
-        streakDay.value++;
-        databaseService.updateDailyGoal(3, streakDay.value);
-        debugPrint("StreakUpdated: ${streakDay.value}");
-        databaseService.updateDailyGoal(4, today);
-      } else {
-        streakDay.value = 0;
-        databaseService.updateDailyGoal(3, streakDay.value);
-        debugPrint("Streak reseted!");
-      }
-    } else if (diff >= 2) {
-      streakDay.value = 0;
-      databaseService.updateDailyGoal(3, streakDay.value);
-      debugPrint("Streak reseted!");
-    } else {
-      debugPrint("No problem for now");
-      debugPrint("today = $todayDateTime");
-      debugPrint("last updated = $lastUpdated");
-    }
   }
 
   Future<void> notiButton() async {
-    NotiServices().showNotification(
-      title: "Drip",
-      body: "This is an example notification",
-    );
+    NotiServices().scheduleNotification(title: "Good Morning", body: "Lets start drinking water", hour: 9, minute: 30);
+    NotiServices().scheduleNotification(title: "This is the end of the day", body: "The day is ending. Finish it.", hour: 18, minute: 00);
+    NotiServices().scheduleNotification(title: "Good Night!", body: "Have a good night", hour: 23, minute: 00);
+    debugPrint("scheduled notifi");
   }
 
   @override
@@ -367,17 +311,19 @@ class HomePageController extends GetxController {
   @override
   void onInit() async {
     super.onInit();
+    randomQuote = getRandomQuote(motivationalQuotes);
+    await checkForStreak();
     await _initData();
     await _loadStreak();
     requestNotificationPermission();
   }
 
   Future<void> _initData() async {
-    randomQuote = getRandomQuote(motivationalQuotes);
     await addDailyGoal();
     await checkForStreak();
     await _loadWaterGoal();
     await _loadDrankWater();
+    await notiButton();
     databaseService.printd();
   }
 }

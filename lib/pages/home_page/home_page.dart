@@ -33,11 +33,7 @@ class HomePage extends GetView<HomePageController> {
             padding: const EdgeInsets.all(15.0),
             child: Column(
               children: [
-                _StreakCard(controller: controller),
-                SizedBox(height: 5),
                 _DailyGoalCard(controller: controller),
-                SizedBox(height: 20,),
-                ElevatedButton(onPressed: controller.notiButton, child: const Text("Notification")),
                 SizedBox(height: 40),
                 Text(
                   '"${controller.randomQuote?["quote"]}"',
@@ -211,93 +207,3 @@ class _DailyGoalCardState extends State<_DailyGoalCard> {
   }
 }
 
-class _StreakCard extends StatefulWidget {
-  const _StreakCard({required this.controller});
-
-  final HomePageController controller;
-
-  @override
-  State<_StreakCard> createState() => _StreakCardState();
-}
-
-class _StreakCardState extends State<_StreakCard> {
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      width: MediaQuery.of(context).size.width,
-      child: Card(
-        elevation: 15,
-        shadowColor: Theme.of(context).primaryColor,
-        child: Padding(
-          padding: const EdgeInsets.all(20.0),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              CircularPercentIndicator(
-                radius: 60.0,
-                animation: true,
-                animationDuration: 1000,
-                lineWidth: 20.0,
-                percent: widget.controller.streakPercentage.clamp(0.0, 1.0),
-                circularStrokeCap: CircularStrokeCap.round,
-                center: Lottie.asset(
-                  "assets/animations/streak.json",
-                  width: 40,
-                ),
-
-                progressColor: Colors.deepOrange,
-              ),
-
-              SizedBox(width: 20),
-              Expanded(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text(
-                      "Water Streak",
-                      style: TextStyle(
-                        fontWeight: FontWeight.w300,
-                        fontSize: 20,
-                      ),
-                    ),
-                    const Text(
-                      """Achieve your goals for 10 day""",
-                      style: TextStyle(color: Colors.deepOrange),
-                      overflow: TextOverflow.clip,
-                      maxLines: 2,
-                      textAlign: TextAlign.center,
-                    ),
-                    SizedBox(height: 20),
-                    Obx(
-                      () => Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          const Text(
-                            "Day: ",
-                            style: TextStyle(
-                              fontWeight: FontWeight.w300,
-                              fontSize: 30,
-                            ),
-                          ),
-                          Text(
-                            "${widget.controller.streakDay.value}",
-                            style: TextStyle(
-                              fontWeight: FontWeight.w300,
-                              fontSize: 30,
-                              color: Colors.deepOrange,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
