@@ -1,10 +1,8 @@
 # 💧 Drip - Water Tracking App
-<div align="center">
 ![Flutter](https://img.shields.io/badge/Flutter-%2302569B.svg?style=for-the-badge&logo=Flutter&logoColor=white)
 ![Dart](https://img.shields.io/badge/dart-%230175C2.svg?style=for-the-badge&logo=dart&logoColor=white)
 ![Release](https://img.shields.io/github/v/release/pamiracar/drip?style=for-the-badge)
 ![Downloads](https://img.shields.io/github/downloads/pamiracar/drip/total?style=for-the-badge)
-</div>
 
 A simple and intuitive mobile app to track your daily water intake and stay hydrated.
 
