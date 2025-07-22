@@ -2,7 +2,6 @@
 
 ![Flutter](https://img.shields.io/badge/Flutter-%2302569B.svg?style=for-the-badge&logo=Flutter&logoColor=white)
 ![Dart](https://img.shields.io/badge/dart-%230175C2.svg?style=for-the-badge&logo=dart&logoColor=white)
-![License](https://img.shields.io/github/license/pamiracar/drip?style=for-the-badge)
 ![Release](https://img.shields.io/github/v/release/pamiracar/drip?style=for-the-badge)
 ![Downloads](https://img.shields.io/github/downloads/pamiracar/drip/total?style=for-the-badge)
 
@@ -40,14 +39,10 @@ This app was developed to help users build healthy hydration habits and track th
 ## 📸 Screenshots
 
 <!-- Add screenshots here -->
-
-## 🤝 Contributing
-
-1. Fork this repository
-2. Create a feature branch (`git checkout -b feature/new-feature`)
-3. Commit your changes (`git commit -am 'Add new feature'`)
-4. Push to the branch (`git push origin feature/new-feature`)
-5. Create a Pull Request
+<div align="center">
+  <img src="screenshot.png" width="300" alt="Home Screen">
+  <img src="screenshot2.png" width="300" alt="Chart Screen">
+</div>
 
 ## 📝 License
 
